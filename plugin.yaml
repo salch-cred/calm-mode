@@ -1,0 +1,34 @@
+name: calm-mode
+version: 0.1.0
+manifest_version: 2
+api_version: 1
+description: >-
+  When you get frustrated, your agent slows down. Calm Mode reads the tone of each message ("still
+  broken", "I already told you", all caps, "!!!", the same message twice); frustration builds over a
+  few messages and fades when you're happy. Past a threshold the agent switches to careful mode: one
+  step at a time, say what it will do first, check each change. In code, it allows at most two file
+  edits per turn and holds risky commands (rm -rf, git push, deploys, DROP TABLE) until you say yes.
+  /calm shows the level and lets you force it on or off. No model calls.
+author: salch-cred
+license: MIT
+homepage: https://github.com/salch-cred/calm-mode
+tags: [ux, safety, coding, guardrails, wellbeing, reliability]
+requires_hermes: ">=0.23.0"
+
+provides_hooks:
+  - pre_llm_call
+  - pre_tool_call
+
+config_schema:
+  threshold:
+    type: float
+    default: 3
+    description: Frustration level at which careful mode starts.
+  calm_below:
+    type: float
+    default: 1
+    description: Careful mode ends when the level falls below this.
+  max_edits:
+    type: int
+    default: 2
+    description: File edits allowed per turn in careful mode.
